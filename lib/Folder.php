@@ -51,15 +51,15 @@ class Folder {
    * @param string $folder
    *  The Box ID of the folder to look up.
    *
-   * @param array $url_param
-   *  Allows callers to specify various criterea to limit or improve search.
-   *
    * @param string $type
    *  Specify the type of items that should be returned. Valid values are:
    *  'folder', 'file', and 'web_link'. If no value is specified, all types
    *  are returned.
+   *
+   * @param array $url_param
+   *  Allows callers to specify various criterea to limit or improve search.
    */
-  public function getItems($folder = 0, $url_param = array(), $type = FALSE) {
+  public function getItems($folder = 0, $type = FALSE, $url_param = array()) {
 
     $sub_path = $folder . '/items';
 
@@ -70,19 +70,19 @@ class Folder {
     }
 
     $response = $this->request('GET', $param, $sub_path);
-
+    dpm($response);
     // Check to verify that results were actually returned.
     $results = FALSE;
-    if (!empty($response['entries'])) {
+    if (!empty($response->entries)) {
 
       // If no type was specified, then return all items.
       if (empty($type)) {
-        $results = $response['entries'];
+        $results = $response->entries;
       }
       else {
         // if a type was specified, then loop through all items to only return
         // items of that type.
-        foreach($response['entries'] as $entry){
+        foreach($response->entries as $entry){
           if ($entry['type'] == $type){
             $results[] = $entry;
           }
