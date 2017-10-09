@@ -76,6 +76,12 @@ class User {
 
   /**
    * Get a list of users.
+   *
+   * @param string $filter
+   *  String to be used to filter results by their name or login.
+   *
+   * @param int $limit
+   *  Specifies the max number of results that will be returned.
    */
   public function getUsers($filter = FALSE, $limit = 100, $offset = 0, $param = array()){
     $url_param = array(
@@ -91,8 +97,8 @@ class User {
     $entries = FALSE;
 
     $result = $this->request('GET', array('url_param' => $url_param));
-    if (!empty($result['entries'])) {
-      $entries = $result['entries'];
+    if (!empty($result->entries)) {
+      $entries = $result->entries;
     }
 
     return $entries;
