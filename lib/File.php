@@ -30,7 +30,7 @@ class File {
    *  The unique ID of the box file.
    */
   public function getFile($file_id, $param = array()) {
-    return $this->request('GET', $param, $path);
+    return $this->request('GET', $param, $file_id);
   }
 
   /**
@@ -121,6 +121,11 @@ class File {
     if (!empty($sub_path)) {
       $url .= '/'. $sub_path;
     }
+
+    $param['headers'] = !empty($param['headers']) ? $param['headers'] : array();
+
+    $default_headers = array('Content-Type' => 'application/json');
+    $param['headers'] = array_merge($default_headers, $param['headers']);
 
     return $box_client->curlRequest($url, $method, $param);
   }

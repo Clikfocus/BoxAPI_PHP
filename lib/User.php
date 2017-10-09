@@ -94,12 +94,15 @@ class User {
    */
   public function getUserByLogin($login, $complete = TRUE){
     $result = $this->getUsers($login);
+    if (!empty($result) && !empty($result[0])) {
+      $user = $result[0];
 
-    if (!$complete) {
-      if (!empty($result->entries)) {
-        $user = reset($result->entries);
-        if (!empty($user) && $user->id) {
+      if (!empty($user)) {
+        if (!$complete && $user->id) {
           $result = $user->id;
+        }
+        else {
+          $result = $user;
         }
       }
     }
@@ -183,6 +186,10 @@ class User {
     if (!empty($sub_path)) {
       $url .= '/'. $sub_path;
     }
+    $param['headers'] = !empty($param['headers']) ? $param['headers'] : array();
+
+    $default_headers = array('Content-Type' => 'application/json');
+    $param['headers'] = array_merge($default_headers, $param['headers']);
 
     return $box_client->curlRequest($url, $method, $param);
   }

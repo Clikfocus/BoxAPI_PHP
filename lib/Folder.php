@@ -83,7 +83,7 @@ class Folder {
         // if a type was specified, then loop through all items to only return
         // items of that type.
         foreach($response->entries as $entry){
-          if ($entry['type'] == $type){
+          if ($entry->type == $type){
             $results[] = $entry;
           }
         }
@@ -143,6 +143,11 @@ class Folder {
     if (!empty($sub_path)) {
       $url .= '/'. $sub_path;
     }
+
+    $param['headers'] = !empty($param['headers']) ? $param['headers'] : array();
+
+    $default_headers = array('Content-Type' => 'application/json');
+    $param['headers'] = array_merge($default_headers, $param['headers']);
 
     return $box_client->curlRequest($url, $method, $param);
   }

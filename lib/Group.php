@@ -102,6 +102,11 @@ class Group {
       $url .= '/'. $sub_path;
     }
 
+    $param['headers'] = !empty($param['headers']) ? $param['headers'] : array();
+
+    $default_headers = array('Content-Type' => 'application/json');
+    $param['headers'] = array_merge($default_headers, $param['headers']);
+
     return $box_client->curlRequest($url, $method, $param);
   }
 }

@@ -121,20 +121,6 @@ class BoxClient {
   }
 
   /**
-   * Builds a url for a request
-   *
-   * @deprecated Entity classes will handle the majority of this logic.
-   */
-  private function buildUrl($api_func, array $opts = array(), $url) {
-    if (!$url) $url = $this::BOX_API_URL;
-    $opts = $this->addAccessHeader($opts);
-    $base = $url . $api_func . '?';
-    $query_string = http_build_query($opts);
-    $base = $base . $query_string;
-    return $base;
-  }
-
-  /**
    * Callback to set access header on outgoing requests.
    *
    * @param array $headers
@@ -157,7 +143,6 @@ class BoxClient {
       $headers['As-User'] = $this->as_user;
     }
   }
-
 
   /**
    * Authenticate against the Box API to retrieve an access token.
@@ -192,12 +177,12 @@ class BoxClient {
   /**
    * Decodes an xml response into an array.
    */
-  private function parseResult($res) {
-    $xml = simplexml_load_string($res);
-    $json = json_encode($xml);
-    $array = json_decode($json,TRUE);
-    return $array;
-  }
+  // private function parseResult($res) {
+  //   $xml = simplexml_load_string($res);
+  //   $json = json_encode($xml);
+  //   $array = json_decode($json,TRUE);
+  //   return $array;
+  // }
 
   /**
    * Perform a curl request based on the values provided.
@@ -243,9 +228,15 @@ class BoxClient {
     }
 
     if (!empty($body)) {
-      $body_string = http_build_query($body, '', '&');
 
-      curl_setopt($ch, CURLOPT_POSTFIELDS, $body_string);
+      if ($headers['Content-Type'] == 'application/x-www-form-urlencoded') {
+        $body = http_build_query($body, '', '&');
+      }
+      elseif ($headers['Content-Type'] == 'application/json') {
+        $body = json_encode($body);
+      }
+
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
     }
 
     if ($follow) {
@@ -260,7 +251,6 @@ class BoxClient {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 
     curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-    dpm(curl_getinfo($ch));
 
     $response = curl_exec($ch);
     $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
