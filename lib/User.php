@@ -10,7 +10,10 @@ class User {
   const USER_API_BASE_URL = 'users';
 
   private $box_client;
-  public $user_id;
+  public $id;
+
+  public $login;
+  public $name;
 
   /**
    * Create a new instance of a User.
@@ -21,56 +24,6 @@ class User {
    */
   public function __construct($box_client) {
     $this->box_client = $box_client;
-  }
-
-  /**
-   * Delete a file from the Box App.
-   *
-   * @param string $file
-   *  The unique ID of the box file.
-   */
-  public function delete($file) {
-
-    $return = $this->request('DELETE', $param, $file);
-    if (empty($return)){
-      return TRUE;
-    }
-    else {
-      return $return;
-    }
-  }
-
-  /**
-   * Create a user in Box.
-   *
-   * @param string $login
-   *  Box login of the user to be created.
-   *
-   * @param string $name
-   *  Name of the user to be created.
-   *
-   * @param array $values
-   *  An array of values that should be added to the body of the request.
-   *
-   * @param array $fields
-   *  An array of fields that should be returned in the response.
-   */
-  public function createUser($login, $name, $values = array(), $fields = array()){
-
-    $defaults = array('login' => $login, 'name' => $name);
-
-    $body_values = array_merge($defaults, $values);
-
-    $param = array(
-      'body' => $body_values,
-    );
-
-    // If there a list of fields were specified, then include them here.
-    if (!empty($fields)) {
-      $param['url_param'] = array('fields' => $fields);
-    }
-
-    return $this->request('POST', $param);
   }
 
 
@@ -155,17 +108,6 @@ class User {
   }
 
   /**
-   * Invite a user to an enterprise.
-   *
-   * @TODO: This implementation does not make use of the correct API criterea.
-   */
-  // public function inviteUser($login, $name) {
-  //   $params = array('login' =>$login, 'name' => $name) ;
-  //   return $this->request('POST');
-  // }
-
-
-  /**
    * Retrieves the details of the current user.
    *
    * This is just a wrapper around getUserById, using the special user ID of
@@ -177,6 +119,42 @@ class User {
    */
   public function getCurrentUser() {
     return $this->getUserById('me');
+  }
+
+  /**
+   * Clean and prepare this object for a request.
+   */
+  private function getValues() {
+    // Clone and remove the client from the User object.
+    $values = clone $this;
+    unset($values->box_client);
+    unset($values->id);
+
+    // Return the cleaned values as an array.
+    return (array) $values;
+  }
+
+  /**
+   * Utility function to save this object.
+   */
+  public function save() {
+    if (!isset($this->id) || empty($this->id)) {
+      $method = 'POST';
+      $sub_path = '';
+    }
+    else {
+      $method = 'PUT';
+      $sub_path = $this->id;
+    }
+    $values = $this->getValues();
+
+    $param = array(
+      'body' => $values,
+    );
+
+    $return = $this->request($method, $param, $sub_path);
+    $this->id = $return->entries[0]->id;
+    return $return->entries[0];
   }
 
   /**
@@ -192,6 +170,7 @@ class User {
    *    'headers' => array(),
    *    'body' => array(),
    *    'url_param' => array(),
+   *    'follow' => bool,
    *  );
    *
    * @param string $sub_path
@@ -207,4 +186,37 @@ class User {
 
     return $box_client->curlRequest($url, $method, $param);
   }
+
+  // /**
+  //  * Create a user in Box.
+  //  *
+  //  * @param string $login
+  //  *  Box login of the user to be created.
+  //  *
+  //  * @param string $name
+  //  *  Name of the user to be created.
+  //  *
+  //  * @param array $values
+  //  *  An array of values that should be added to the body of the request.
+  //  *
+  //  * @param array $fields
+  //  *  An array of fields that should be returned in the response.
+  //  */
+  // public function create($login, $name, $values = array(), $fields = array()){
+
+  //   $defaults = array('login' => $login, 'name' => $name);
+
+  //   $body_values = array_merge($defaults, $values);
+
+  //   $param = array(
+  //     'body' => $body_values,
+  //   );
+
+  //   // If there a list of fields were specified, then include them here.
+  //   if (!empty($fields)) {
+  //     $param['url_param'] = array('fields' => $fields);
+  //   }
+
+  //   return $this->request('POST', $param);
+  // }
 }

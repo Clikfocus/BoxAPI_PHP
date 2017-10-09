@@ -88,6 +88,7 @@ class Group {
    *    'headers' => array(),
    *    'body' => array(),
    *    'url_param' => array(),
+   *    'follow' => bool,
    *  );
    *
    * @param string $sub_path
