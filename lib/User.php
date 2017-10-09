@@ -187,36 +187,40 @@ class User {
     return $box_client->curlRequest($url, $method, $param);
   }
 
-  // /**
-  //  * Create a user in Box.
-  //  *
-  //  * @param string $login
-  //  *  Box login of the user to be created.
-  //  *
-  //  * @param string $name
-  //  *  Name of the user to be created.
-  //  *
-  //  * @param array $values
-  //  *  An array of values that should be added to the body of the request.
-  //  *
-  //  * @param array $fields
-  //  *  An array of fields that should be returned in the response.
-  //  */
-  // public function create($login, $name, $values = array(), $fields = array()){
+  /**
+   * Create a user in Box.
+   *
+   * @deprecated This is replaced by the more generic save() method.
+   *  The save method performs a create/update based off of the values set
+   *  against the user object.
+   *
+   * @param string $login
+   *  Box login of the user to be created.
+   *
+   * @param string $name
+   *  Name of the user to be created.
+   *
+   * @param array $values
+   *  An array of values that should be added to the body of the request.
+   *
+   * @param array $fields
+   *  An array of fields that should be returned in the response.
+   */
+  public function create($login, $name, $values = array(), $fields = array()){
 
-  //   $defaults = array('login' => $login, 'name' => $name);
+    $defaults = array('login' => $login, 'name' => $name);
 
-  //   $body_values = array_merge($defaults, $values);
+    $body_values = array_merge($defaults, $values);
 
-  //   $param = array(
-  //     'body' => $body_values,
-  //   );
+    $param = array(
+      'body' => $body_values,
+    );
 
-  //   // If there a list of fields were specified, then include them here.
-  //   if (!empty($fields)) {
-  //     $param['url_param'] = array('fields' => $fields);
-  //   }
+    // If there a list of fields were specified, then include them here.
+    if (!empty($fields)) {
+      $param['url_param'] = array('fields' => $fields);
+    }
 
-  //   return $this->request('POST', $param);
-  // }
+    return $this->request('POST', $param);
+  }
 }
