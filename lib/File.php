@@ -54,7 +54,7 @@ class File {
     );
 
     if (!empty($fields)) {
-      $param['url_param']['fields'] = explode(',', $fields);
+      $param['url_param']['fields'] = implode(',', $fields);
     }
 
     $path = $file_id . '/comments';
@@ -74,7 +74,7 @@ class File {
     $param = array();
 
     if (!empty($fields)) {
-      $param['url_param']['fields'] = explode(',', $fields);
+      $param['url_param']['fields'] = implode(',', $fields);
     }
 
     $path = $file_id . '/tasks';
@@ -173,7 +173,7 @@ class File {
 
     if (!empty($fields)) {
       $param['url_param'] = array(
-        'fields' => explode(',', $fields),
+        'fields' => implode(',', $fields),
       );
     }
 

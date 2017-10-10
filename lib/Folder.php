@@ -38,7 +38,7 @@ class Folder {
 
     if (!empty($fields)) {
       $param['url_param'] = array(
-        'fields' => explode(',', $fields),
+        'fields' => implode(',', $fields),
       );
     }
 
@@ -110,7 +110,7 @@ class Folder {
 
     if (!empty($fields)) {
       $param['url_param'] = array(
-        'fields' => explode(',', $fields),
+        'fields' => implode(',', $fields),
       );
     }
 
@@ -177,7 +177,7 @@ class Folder {
 
     if (!empty($fields)) {
       $param['url_param'] = array(
-        'fields' => explode(',', $fields),
+        'fields' => implode(',', $fields),
       );
     }
 
@@ -203,7 +203,7 @@ class Folder {
 
     if (!empty($fields)) {
       $param['url_param'] = array(
-        'fields' => explode(',', $fields),
+        'fields' => implode(',', $fields),
       );
     }
 
